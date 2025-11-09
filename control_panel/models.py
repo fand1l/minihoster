@@ -5,7 +5,6 @@ class MinecraftServer(models.Model):
     class SoftwareChoices(models.TextChoices):
         VANILLA = "vanilla", "Vanilla"
         PAPER = "paper", "Paper"
-        PUFFERFISH = "pufferfish", "Pufferfish"
         FOLIA = "folia", "Folia"
         VELOCITY = "velocity", "Velocity"
         ARCLIGHTE = "arclight", "Arclight"
