@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create new server</title>
+</head>
+<body>
+    <h2>Create</h2>
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+        
+        <div id="software-selection">
+            <button type="button" class="software-btn" data-software="vanilla">
+                Vanilla
+            </button>
+            <button type="button" class="software-btn" data-software="paper">
+                Paper
+            </button>
+            <button type="button" class="software-btn" data-software="folia">
+                Folia
+            </button>
+            <button type="button" class="software-btn" data-software="velocity">
+                Velocity
+            </button>
+            <button type="button" class="software-btn" data-software="archlight">
+                Arclight
+            </button>
+            <button type="button" class="software-btn" data-software="Fabric">
+                Fabric
+            </button>
+            <button type="button" class="software-btn" data-software="forge">
+                Forge
+            </button>
+            <button type="button" class="software-btn" data-software="neoforge">
+                NeoForge
+            </button>
+            <button type="button" class="software-btn" data-software="quilt">
+                Quilt
+            </button>
+        </div>
+
+        <input type="hidden" name="software" id="selected-software-input">
+        <input type="hidden" name="version" id="selected-version-input">
+        <input type="hidden" name="filename" id="filename-input">
+        <input type="hidden" name="download_url" id="download-url-input"> 
+
+        <div id="version-selection">
+        </div>
+
+        <script>
+            const softwareButtons = document.querySelectorAll('.software-btn');
+
+            softwareButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const softwareName = button.dataset.software;
+
+                    document.getElementById('selected-software-input').value = softwareName;
+                    document.getElementById('selected-version-input').value = '';
+
+                    fetch(`api/get-version/?software=${softwareName}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const versionContainer = document.getElementById('version-selection');
+                            versionContainer.innerHTML = '';
+
+                            data.versions.forEach(version => {
+                                const versionButton = document.createElement('button');
+                                versionButton.type = 'button';
+                                versionButton.className = 'version-btn';
+                                versionButton.innerText = version;
+                                versionButton.dataset.version = version;
+
+                                versionContainer.appendChild(versionButton);
+                            });
+                        });
+                });
+            });
+
+            const versionContainer = document.getElementById('version-selection');
+            versionContainer.addEventListener('click', (event) => {
+                if (event.target.classList.contains('version-btn')) {
+                    const selectedVersion = event.target.dataset.version;
+
+                    const selectedSoftware = document.getElementById('selected-software-input').value;
+                    
+                    document.getElementById('selected-version-input').value = selectedVersion;
+                    
+                    fetch(`api/get-download-info/?software=${selectedSoftware}&version=${selectedVersion}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('filename-input').value = data.file_name;
+                            document.getElementById('download-url-input').value = data.download_url;
+                        })
+                }
+            });
+        </script>
+    </form>
+</body>
+</html>
