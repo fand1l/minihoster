@@ -234,10 +234,37 @@ def get_available_versions(request):
 def get_download_info(request):
     software_name = request.GET.get("software")
     version = request.GET.get("version")
+    file_name = ""
+    download_url = ""
 
     if not software_name or not version:
         return JsonResponse({"error": "No software or version"}, status=400)
     
+    if software_name == "vanilla":
+        try:
+            api_url = "https://launchermeta.mojang.com/mc/game/version_manifest.json"
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+            for i in data["versions"]:
+                if i["id"] == version:
+                    api_url = i["url"]
+
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+            download_url = data["downloads"]["server"]["url"]
+            file_name = "server.jar"
+            
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=503)
+        except KeyError:
+            return JsonResponse({"error": "API dead"}, status=500)
+    
+
     if software_name == "paper":
         try:
             api_url = f"https://api.papermc.io/v2/projects/paper/versions/{version}"
@@ -259,6 +286,123 @@ def get_download_info(request):
             return JsonResponse({"error": str(e)}, status=503)
         except KeyError:
             return JsonResponse({"error": "API dead"}, status=500)
+        
+    
+    if software_name == "folia":
+        try:
+            api_url = ""
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+            latest_build = data["builds"][-1]
+
+            api_url = f"https://api.papermc.io/v2/projects/folia/versions/{version}/builds/{latest_build}"
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+            file_name = data["downloads"]["application"]["name"]
+            download_url = f"https://api.papermc.io/v2/projects/folia/versions/{version}/builds/{latest_build}/downloads/{file_name}"
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=503)
+        except KeyError:
+            return JsonResponse({"error": "API dead"}, status=500)
+        
+    
+    if software_name == "velocity":
+        try:
+            api_url = ""
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+            latest_build = data["builds"][-1]
+
+            api_url = f"https://api.papermc.io/v2/projects/velocity/versions/{version}/builds/{latest_build}"
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+            file_name = data["downloads"]["application"]["name"]
+            download_url = f"https://api.papermc.io/v2/projects/velocity/versions/{version}/builds/{latest_build}/downloads/{file_name}"
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=503)
+        except KeyError:
+            return JsonResponse({"error": "API dead"}, status=500)
+        
+
+    if software_name == "arclight":
+        try:
+            api_url = ""
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=503)
+        except KeyError:
+            return JsonResponse({"error": "API dead"}, status=500)
+        
+    
+    if software_name == "fabric":
+        try:
+            api_url = ""
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=503)
+        except KeyError:
+            return JsonResponse({"error": "API dead"}, status=500)
+        
+
+    if software_name == "forge":
+        try:
+            api_url = ""
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=503)
+        except KeyError:
+            return JsonResponse({"error": "API dead"}, status=500)
+        
+
+    if software_name == "neoforge":
+        try:
+            api_url = ""
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=503)
+        except KeyError:
+            return JsonResponse({"error": "API dead"}, status=500)
+        
+
+    if software_name == "quilt":
+        try:
+            api_url = ""
+            response = requests.get(api_url)
+            response.raise_for_status()
+
+            data = response.json()
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=503)
+        except KeyError:
+            return JsonResponse({"error": "API dead"}, status=500)
+        
         
     return JsonResponse({"file_name": file_name, "download-url": download_url})
         
