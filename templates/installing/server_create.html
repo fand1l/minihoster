@@ -24,10 +24,10 @@
             <button type="button" class="software-btn" data-software="velocity">
                 Velocity
             </button>
-            <button type="button" class="software-btn" data-software="archlight">
+            <button type="button" class="software-btn" data-software="arclight">
                 Arclight
             </button>
-            <button type="button" class="software-btn" data-software="Fabric">
+            <button type="button" class="software-btn" data-software="fabric">
                 Fabric
             </button>
             <button type="button" class="software-btn" data-software="forge">
@@ -59,7 +59,7 @@
                     document.getElementById('selected-software-input').value = softwareName;
                     document.getElementById('selected-version-input').value = '';
 
-                    fetch(`api/get-version/?software=${softwareName}`)
+                    fetch(`/install/api/get-versions/?software=${softwareName}`)
                         .then(response => response.json())
                         .then(data => {
                             const versionContainer = document.getElementById('version-selection');
@@ -87,7 +87,7 @@
                     
                     document.getElementById('selected-version-input').value = selectedVersion;
                     
-                    fetch(`api/get-download-info/?software=${selectedSoftware}&version=${selectedVersion}`)
+                    fetch(`/install/api/get-download-info/?software=${selectedSoftware}&version=${selectedVersion}`)
                         .then(response => response.json())
                         .then(data => {
                             document.getElementById('filename-input').value = data.file_name;
