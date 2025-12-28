@@ -26,7 +26,7 @@ class ServerCreateView(CreateView):
         final_jar_path = os.path.join(form.instance.server_dir_location, "server.jar")
 
         try:
-            print(f"Завантажуємо {download_url}...")
+            print(f"Downloading {download_url}...")
             response = requests.get(download_url)
             response.raise_for_status()
             
@@ -36,7 +36,7 @@ class ServerCreateView(CreateView):
 
             with open(final_jar_path, "wb") as f:
                 f.write(jar_data)
-            print(f"Файл збережено: {final_jar_path}")
+            print(f"File saved: {final_jar_path}")
 
         except requests.exceptions.RequestException as e:
             form.add_error(None, f"Download file error: {e}")
